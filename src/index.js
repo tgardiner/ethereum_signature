@@ -66,9 +66,9 @@ window.onload = async () => {
   web3 = new Web3(provider);
 
   // Request the user account and save it into input
-  web3.eth.requestAccounts().then(accounts => {
-    accountInput.value = accounts[0];
-  });
+  const accounts = await web3.eth.getAccounts();
+  console.log("accounts", accounts);
+  accountInput.value = accounts[0];
 
   // Add listeners to clicks that handle the sign and recover process's
   signButton.addEventListener("click", signData);
