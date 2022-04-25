@@ -1,5 +1,10 @@
 // Require web3 to instantiate
-const Web3 = require("web3");
+import Web3 from "web3";
+import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
+// declare web3 globally
+let web3;
 
 // Get elements from DOM
 // // Elements of the signing process
@@ -42,21 +47,30 @@ const recoverAccount = () => {
     });
 };
 
-window.onload = () => {
-  if (!window.web3) {
-    // If not injected web3 environment, show a warning
-    alert("This app needs some web3 provider such as metamask");
-  } else {
-    // Instantiate a new web3 with full capabilities
-    web3 = new Web3(Web3.givenProvider, null, {});
+window.onload = async () => {
+  // Set provider options
+  const providerOptions = {
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        infuraId: "6d29bfc4d9ce44debdc5e8a8e4714608"
+      }
+    }
+  };
+  const web3Modal = new Web3Modal({
+    cacheProvider: true,
+    providerOptions
+  });
 
-    // Request the user account and save it into input
-    web3.eth.requestAccounts().then(accounts => {
-      accountInput.value = accounts[0];
-    });
+  const provider = await web3Modal.connect();
+  web3 = new Web3(provider);
 
-    // Add listeners to clicks that handle the sign and recover process's
-    signButton.addEventListener("click", signData);
-    recoverButton.addEventListener("click", recoverAccount);
-  }
+  // Request the user account and save it into input
+  web3.eth.requestAccounts().then(accounts => {
+    accountInput.value = accounts[0];
+  });
+
+  // Add listeners to clicks that handle the sign and recover process's
+  signButton.addEventListener("click", signData);
+  recoverButton.addEventListener("click", recoverAccount);
 };

@@ -4,10 +4,11 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
   },
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    contentBase: __dirname,
     compress: true,
     port: 9000
   }
